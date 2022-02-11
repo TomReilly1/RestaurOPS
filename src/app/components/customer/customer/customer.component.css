@@ -1,0 +1,61 @@
+.mainBody {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.items>h1 {
+    margin-left: 10px;
+    color: #263238;
+    font-weight: 500;
+}
+
+.items {
+    flex-basis: 80%;
+}
+
+.items>h1 {
+    font-size: 80px;
+    line-height: 80px;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+app-item {
+    padding-left: 15px;
+    padding-top: 15px;
+}
+
+.cart {
+    flex-basis: 25%;
+    background-color: #3c3c3c;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart>h1 {
+    margin-left: 10px;
+    color: white;
+    font-weight: 500;
+    font-size: 50px;
+    line-height: 50px;
+}
+
+.cartItems {
+    flex-grow: 1;
+}
+
+.buttons {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.buttons>* {
+    margin-top: 10px;
+}

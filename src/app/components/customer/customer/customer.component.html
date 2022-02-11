@@ -1,0 +1,17 @@
+<div class="mainBody">
+    <div class="items">
+        <h1>Select your product</h1>
+        <div class="grid">
+            <app-item *ngFor="let item of items"></app-item>
+        </div>
+    </div>
+    <div class="cart mat-elevation-z24">
+        <h1>Your cart</h1>
+        <div class="cartItems">
+
+        </div>
+        <div class="buttons">
+            <button mat-raised-button color="primary">Submit</button>
+            <button mat-raised-button color="accent">Clear</button>
+        </div>
+    </div>
