@@ -12,6 +12,7 @@
 
 .items {
     flex-basis: 80%;
+    overflow-y: scroll;
 }
 
 .items>h1 {

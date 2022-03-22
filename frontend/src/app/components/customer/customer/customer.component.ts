@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Item } from 'src/app/interfaces/item';
 
 @Component({
   selector: 'app-customer',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CustomerComponent implements OnInit {
 
-  items = [
+  items: Item[] = [
     {
       "name": "Hamburger",
       "price": 6.99,
@@ -85,9 +86,15 @@ export class CustomerComponent implements OnInit {
     }
   ]
 
+  cartItems: Item[] = [];
+  
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  addToCart(item: Item) {
+    this.cartItems.push(item);
   }
 
 }
