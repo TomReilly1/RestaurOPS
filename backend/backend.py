@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 
 ######### CONFIG #########
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://user:password@localhost/restops'
+CORS(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@127.0.0.1:3306/restops'
 db = SQLAlchemy(app)
 
 
