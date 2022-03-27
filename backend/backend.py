@@ -14,7 +14,8 @@ db = SQLAlchemy(app)
 class Food(db.Model):
 	__tablename__ = 'food_orders'
 
-	name = db.Column(db.String(100), primary_key=True)
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(100), nullable=False)
 	price = db.Column(db.Float, nullable=False)
 
 	def __init__(self, name, price):
@@ -38,8 +39,10 @@ def cart():
 		# create new Food entry from local vars
 		menu_item = Food(name, price)
 
+		# intitializes table
+		# db.create_all()
+		
 		# commit entry to database
-		# db.create_all() --only used for intialization
 		db.session.add(menu_item)
 		db.session.commit()
 
