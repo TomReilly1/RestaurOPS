@@ -7,19 +7,13 @@ from datetime import datetime
 ######### CONFIG #########
 app = Flask(__name__)
 CORS(app)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@127.0.0.1:3306/restops'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://myuser:mypass@192.168.122.90:3306/restops'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://user:pass@192.168.122.90:3306/restops'
 db = SQLAlchemy(app)
 
 
 ######### MODELS #########
 class OrderItems(db.Model):
 	__tablename__ = 'order_items'
-
-	# order_item_id = db.Column(db.Integer, primary_key=True)
-	# order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'))
-	# item_id = db.Column(db.Integer, db.ForeignKey('items.item_id'))
-	# price = db.Column(db.Float, db.ForeignKey('items.price'))
 
 	order_item_id = db.Column(db.Integer, primary_key=True)
 	order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'))
@@ -28,7 +22,6 @@ class OrderItems(db.Model):
 	price = db.Column(db.Float, nullable=False)
 
 	def __init__(self, order_id, item_id, name, price):
-		# self.order_item_id = order_item_id
 		self.order_id = order_id
 		self.item_id = item_id
 		self.name = name
@@ -45,12 +38,6 @@ class Orders(db.Model):
 
 	def __repr__(self):
 		return f'{self.order_id}, {self.order_time}'
-# class Taxes(db.Model):
-# 	__tablename__ = 'taxes'
-
-# 	tax_id = db.Column(db.Integer, primary_key=True)
-# 	order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'))
-# 	tax_amount = db.Column(db.Numeric(2, 10))
 
 class Items(db.Model):
 	__tablename__ = 'items'
@@ -110,39 +97,6 @@ def cart():
 		return render_template('flask.html', msg=request_data)
 	else:
 		return render_template('flask.html', msg='This is a GET')
-
-
-
-
-
-
-
-
-
-
-	
-
-	# if request.method == 'POST':
-	# 	# get data from json data and put into local vars
-	# 	item_id = request_data['id']
-	# 	name = request_data['name']
-	# 	price = request_data['price']
-	# 	print(request_data)
-	# 	updated_msg = f'The database has been updated with {name} as the name and {price} as the price.'
-
-	# 	# create new Food entry from local vars
-	# 	menu_item = Items(item_id, name, price)
-
-	# 	# intitializes table
-	# 	db.create_all()
-		
-	# 	# commit entry to database
-	# 	db.session.add(menu_item)
-	# 	db.session.commit()
-
-	# 	return render_template('flask.html', msg=updated_msg)
-	# else:
-	# 	return render_template('flask.html', msg='This is a GET')
 
 
 
