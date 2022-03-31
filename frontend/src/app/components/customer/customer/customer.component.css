@@ -35,6 +35,7 @@ app-item {
     background-color: #3c3c3c;
     display: flex;
     flex-direction: column;
+    overflow: scroll;
 }
 
 .cart>h1 {
@@ -46,7 +47,15 @@ app-item {
 }
 
 .cartItems {
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+cart-item {
+    display: flex;
+    justify-content: center;
+    height: auto;
+    margin: 0 0 5px 0;
 }
 
 .buttons {

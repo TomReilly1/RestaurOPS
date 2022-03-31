@@ -1,0 +1,21 @@
+.cart {
+    max-width: 95%;
+    height: auto;
+    background-color: white;
+}
+
+.cart mat-card-title {
+    background-color: white;
+    color: black;
+    font-size: 16px;
+}
+
+.cart mat-card-subtitle {
+    color: grey;
+    font-size: 16px;
+}
+
+mat-card.cart {
+    width: 90%;
+    padding: 16px 0 0;
+}
