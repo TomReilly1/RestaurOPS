@@ -8,7 +8,7 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@127.0.0.1:3306/restops'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:Jkll233-=@192.168.122.90:3306/restops'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://myuser:mypass@192.168.122.90:3306/restops'
 db = SQLAlchemy(app)
 
 
@@ -23,10 +23,14 @@ class OrderItems(db.Model):
 
 	order_item_id = db.Column(db.Integer, primary_key=True)
 	order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'))
-	name = db.Column(db.String(), nullable=False)
+	item_id = db.Column(db.String(100), nullable=False)
+	name = db.Column(db.String(100), nullable=False)
 	price = db.Column(db.Float, nullable=False)
 
-	def __init__(self, name, price):
+	def __init__(self, order_id, item_id, name, price):
+		# self.order_item_id = order_item_id
+		self.order_id = order_id
+		self.item_id = item_id
 		self.name = name
 		self.price = price
 
@@ -80,19 +84,23 @@ def cart():
 			the current order. We must do this instead of creating the 'order_id'
 			on the backend because the 'order_id' is auto_incremented
 			"""
+			# use only to initialize tables
+			#db.create_all()
+
 			# initialize the order and add it to the 'orders' table in mysql db
 			order_entry = Orders(datetime.now())
 			db.session.add(order_entry)
 			db.session.commit()
 
 			# get the 'order_id' from the database
-			current_order_id = Orders.query.order_by(Orders.order_id.desc()).first()
-			print(current_order_id)
+			current_order = Orders.query.order_by(Orders.order_id.desc()).first()
+			current_order_id = current_order.order_id
+			#print(current_order_id.order_id)
 
 			for i in request_data:
 				order_content = OrderItems(
-					i['id'],			# order_item_id
 					current_order_id,	# order_id
+					i['id'],			# item_id
 					i['name'],			# name
 					i['price'])			# price
 				db.session.add(order_content)
