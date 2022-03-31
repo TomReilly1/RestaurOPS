@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,11 +12,13 @@ import { ItemComponent } from './components/customer/item/item.component';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { CartComponent } from './components/customer/cart/cart.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CashierComponent,
+    CartComponent,
     CustomerComponent,
     KitchenComponent,
     ItemComponent
@@ -24,6 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MatCardModule,
     MatButtonModule
   ],
