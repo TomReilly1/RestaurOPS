@@ -7,6 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ItemComponent implements OnInit {
   
+  @Input() id = '';
   @Input() image = '';
   @Input() name = '';
   @Input() price = -1;
