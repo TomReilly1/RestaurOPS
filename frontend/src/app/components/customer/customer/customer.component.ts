@@ -82,13 +82,16 @@ export class CustomerComponent implements OnInit {
   }
 
   clearCart() {
+    for (let i of this.cartItems) {
+      i.quantity = 1;
+    }
     this.cartItems = [];
   }
 
   calculateCartPrice() {
     let totalPrice: number = 0;
     for (let i of this.cartItems) {
-      totalPrice = totalPrice + i.price;
+      totalPrice = totalPrice + (i.price * i.quantity);
       totalPrice = Number(totalPrice.toFixed(2));
     }
     this.priceBeforeTax = totalPrice;
@@ -96,8 +99,10 @@ export class CustomerComponent implements OnInit {
   }
 
   addTax() {
-    this.taxTotal = this.priceBeforeTax * 0.06;
-    let temp: number = this.priceBeforeTax + this.taxTotal;
+    let temp: number = this.priceBeforeTax * 0.06;
+    this.taxTotal = Number(temp.toFixed(4));
+    
+    temp = this.priceBeforeTax + this.taxTotal;
     this.priceAfterTax = Number(temp.toFixed(2));
   }
 

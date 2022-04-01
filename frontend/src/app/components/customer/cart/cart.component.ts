@@ -11,7 +11,7 @@ export class CartComponent implements OnInit {
   @Input() id = '';
   @Input() name = '';
   @Input() price = -1;
-  @Input() quantity = -1;
+  @Input() quantity = 1;
   @Input() cartItems = [];
 
   constructor() { }
