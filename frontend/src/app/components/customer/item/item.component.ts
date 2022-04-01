@@ -11,6 +11,7 @@ export class ItemComponent implements OnInit {
   @Input() image = '';
   @Input() name = '';
   @Input() price = -1;
+  // @Input() quantity = -1;
   
 
   constructor() { }

@@ -1,7 +1,6 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Item } from 'src/app/interfaces/item';
-// import { ItemComponent } from 'src/app/components/customer/item/item.component';
 
 
 @Component({
@@ -17,39 +16,46 @@ export class CustomerComponent implements OnInit {
       "id": "cheeseburger",
       "name": "Cheeseburger",
       "price": 5.99,
+      "quantity": 1,
       "image": "../../../../assets/cheeseburger.jpg"
     },
     {
       "id": "hamburger",
       "name": "Hamburger",
       "price": 4.99,
+      "quantity": 1,
       "image": "../../../../assets/hamburger.jpg"
     },
     {
       "id": "chicken-sandwich",
       "name": "Chicken Sandwich",
       "price": 5.99,
+      "quantity": 1,
       "image": "../../../../assets/chicken-sandwich.jpg"
     },
     {
       "id": "fries-sm",
       "name": "Fries-Small",
       "price": 2.99,
+      "quantity": 1,
       "image": "../../../../assets/fries-sm.jpg"
     },
     {
       "id": "fries-md",
       "name": "Fries-Medium",
       "price": 3.99,
+      "quantity": 1,
       "image": "../../../../assets/fries-md.jpg"
     },
     {
       "id": "fries-lg",
       "name": "Fries-Large",
       "price": 4.99,
+      "quantity": 1,
       "image": "../../../../assets/fries-lg.jpg"
     },
-  ]
+  ];
+
 
   cartItems: Item[] = [];
   taxPercent: number = 0.06;
@@ -62,8 +68,15 @@ export class CustomerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  addToCart(item: Item) {
-    this.cartItems.push(item);
+  addToCart(addedItem: Item) {
+    if (this.cartItems.some(i => i.id === addedItem.id)) {
+      addedItem.quantity += 1;
+    }
+    else {
+      this.cartItems.push(addedItem);
+    }
+
+    
     // this.http.post<Item>('http://192.168.0.68:5000/', {'name': item.name, 'price': item.price}).subscribe();
     // this.http.post<Item>('http://127.0.0.1:5000/', {'name': item.name, 'price': item.price}).subscribe();
   }
@@ -79,7 +92,7 @@ export class CustomerComponent implements OnInit {
       totalPrice = Number(totalPrice.toFixed(2));
     }
     this.priceBeforeTax = totalPrice;
-    this.addTax()
+    this.addTax();
   }
 
   addTax() {
