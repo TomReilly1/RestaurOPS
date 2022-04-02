@@ -1,0 +1,7 @@
+{
+    "/api/create-checkout-session": {
+        "target": "http://localhost:4242",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}
