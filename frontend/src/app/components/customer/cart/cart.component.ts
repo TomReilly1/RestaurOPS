@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CustomerComponent } from 'src/app/components/customer/customer/customer.component';
 
 
 @Component({
@@ -14,9 +15,11 @@ export class CartComponent implements OnInit {
   @Input() quantity = 1;
   @Input() cartItems = [];
 
-  constructor() { }
-
-  ngOnInit(): void {
+  clearCart() {
+    this.cartItems = [];
   }
 
+  constructor() { }
+
+  ngOnInit(): void { }
 }
