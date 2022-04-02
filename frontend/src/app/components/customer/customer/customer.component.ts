@@ -16,6 +16,7 @@ export class CustomerComponent implements OnInit {
       "id": "cheeseburger",
       "name": "Cheeseburger",
       "price": 5.99,
+      "price_id": "price_1KjlsJKyPdTxxYmHKBSf8zik",
       "quantity": 1,
       "image": "../../../../assets/cheeseburger.jpg"
     },
@@ -23,6 +24,7 @@ export class CustomerComponent implements OnInit {
       "id": "hamburger",
       "name": "Hamburger",
       "price": 4.99,
+      "price_id": "price_1KjlsJKyPdTxxYmHKBSf8zik",
       "quantity": 1,
       "image": "../../../../assets/hamburger.jpg"
     },
@@ -30,6 +32,7 @@ export class CustomerComponent implements OnInit {
       "id": "chicken-sandwich",
       "name": "Chicken Sandwich",
       "price": 5.99,
+      "price_id": "price_1KjqssKyPdTxxYmHuL16F8FE",
       "quantity": 1,
       "image": "../../../../assets/chicken-sandwich.jpg"
     },
@@ -37,6 +40,7 @@ export class CustomerComponent implements OnInit {
       "id": "fries-sm",
       "name": "Fries-Small",
       "price": 2.99,
+      "price_id": "price_1KjquAKyPdTxxYmHeWPnlZQ4",
       "quantity": 1,
       "image": "../../../../assets/fries-sm.jpg"
     },
@@ -44,6 +48,7 @@ export class CustomerComponent implements OnInit {
       "id": "fries-md",
       "name": "Fries-Medium",
       "price": 3.99,
+      "price_id": "price_1KjquVKyPdTxxYmHXeFOtG44",
       "quantity": 1,
       "image": "../../../../assets/fries-md.jpg"
     },
@@ -51,6 +56,7 @@ export class CustomerComponent implements OnInit {
       "id": "fries-lg",
       "name": "Fries-Large",
       "price": 4.99,
+      "price_id": "price_1KjqupKyPdTxxYmH3KH7LssL",
       "quantity": 1,
       "image": "../../../../assets/fries-lg.jpg"
     },
@@ -101,21 +107,28 @@ export class CustomerComponent implements OnInit {
   addTax() {
     let temp: number = this.priceBeforeTax * 0.06;
     this.taxTotal = Number(temp.toFixed(4));
-    
+
     temp = this.priceBeforeTax + this.taxTotal;
     this.priceAfterTax = Number(temp.toFixed(2));
   }
+
 
   submitToBackend() {
     // for (let i of this.cartItems) {
     //   this.http.post<Item>('http://127.0.0.1:5000/', {'id': i.id, 'name': i.name, 'price': i.price}).subscribe();
     // }
-    this.http.post('http://127.0.0.1:5000/', this.cartItems).subscribe(
-      response => console.log("Success! ", response),
+    // this.http.post('http://127.0.0.1:5000/', this.cartItems).subscribe(
+    //   response => console.log("Success! ", response),
+    //   error => console.error("Error: ", error)
+    // );
+
+    this.http.post('http://localhost:4242/api/create-checkout-session', this.cartItems,{responseType: "text"}).subscribe(
+      response => window.location.href = response,
       error => console.error("Error: ", error)
-    );
+    );  
 
     this.clearCart();
+
   }
 
 }
