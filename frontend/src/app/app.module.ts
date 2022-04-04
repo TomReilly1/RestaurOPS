@@ -18,6 +18,8 @@ import { MatRippleModule } from '@angular/material/core';
 // ... other imports
 import { FormsModule } from '@angular/forms';
 import { SocketIoModule } from 'ngx-socket-io';
+
+import { OrderComponent } from './components/kitchen/order/order.component';
 //const config: SocketIoConfig = { url: 'ws://localhost:4242', options: {} };
 
 @NgModule({
@@ -28,6 +30,7 @@ import { SocketIoModule } from 'ngx-socket-io';
     CustomerComponent,
     KitchenComponent,
     ItemComponent,
+    OrderComponent,
   ],
   imports: [
     BrowserModule,

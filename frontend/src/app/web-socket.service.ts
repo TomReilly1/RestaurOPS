@@ -16,6 +16,7 @@ export class WebSocketService {
   }
 
 
+  // listens on websocket for updating orders
   listen(eventName: string) {
     return new Observable((subscriber) => {
       this.socket.on(eventName, (data: any) => {
@@ -24,7 +25,7 @@ export class WebSocketService {
     })
   }
 
-
+  // sends completed order to database
   emit(eventName: string, data: any) {
     this.socket.emit(eventName, data);
   }

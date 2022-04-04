@@ -153,6 +153,30 @@ def webhook():
 		return jsonify(success=True)
 
 
+@app.route('/api/mark-order-complete', methods=['POST'])
+def completeOrder():
+	request_data = request.get_json()
+	print(request_data['order_id'])
+	print(request_data['items_list'])
+
+	l_order_id = request_data['order_id']
+	# l_items_list = request_data['items_list']
+
+	OrderItemsInProgress.query.filter_by(checkout_id=l_order_id).delete()
+	db.session.commit()
+
+	OrdersInProgress.query.filter_by(checkout_id=l_order_id).delete()
+	db.session.commit()
+
+	# for i in l_items_list:
+	# 	price_id = i['id']
+	# 	name = i['name']
+	# 	quantity = i['quantity']
+	# 	db.session.delete
+
+	return jsonify("ORDER MARKED AS COMPLETED RECEIVED")
+
+
 # @app.route('/api/add-order-to-kitchen', methods=['POST', 'GET'])
 # def addOrder():
 # 	request_data = request.get_json()
@@ -198,14 +222,16 @@ def connect():
 	for order in orders:
 		order_obj = {}
 		order_obj['order_id'] = order.checkout_id
-		items_list = {}
+		items_list = []
 		# order_id = order.checkout_id
 		# print(order_id)
 		order_items = OrderItemsInProgress.query.filter_by(checkout_id=order.checkout_id)
-		for item in order_items:
-			items_list['id'] = item.price_id
-			items_list['name'] = item.name
-			items_list['quantity'] = item.quantity
+		for i in order_items:
+			item = {}
+			item['id'] = i.price_id
+			item['name'] = i.name
+			item['quantity'] = i.quantity
+			items_list.append(item)
 		
 		order_obj['items_list'] = items_list
 		array_of_objects.append(order_obj)
