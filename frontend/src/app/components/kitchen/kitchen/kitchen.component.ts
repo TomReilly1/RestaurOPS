@@ -45,5 +45,9 @@ export class KitchenComponent implements OnInit {
 
       console.log(this.ordersInProgress);
     })
+
+    this.webSocketService.listen('newOrder').subscribe((data: any) => {
+      this.ordersInProgress.push(data);
+    });
   }
 }
