@@ -7,11 +7,12 @@ import { KitchenComponent } from './components/kitchen/kitchen/kitchen.component
 const routes: Routes = [
   {path: 'customer', component: CustomerComponent},
   {path: 'cashier', component: CashierComponent},
-  {path: 'kitchen', component: KitchenComponent}
+  {path: 'kitchen', component: KitchenComponent},
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
+
 export class AppRoutingModule { }
