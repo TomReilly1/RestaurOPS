@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:pass@192.168.122.90:3306/restops'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:Jkll233-=@192.168.122.90:3306/restops'
 app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQxfd7PK3amQGi6RHdl9Xx966Bjas1HlDH0B9A7N00MjcbjqJX'
 app.config['STRIPE_SECRET_KEY'] =  'sk_test_51KLWJVKyPdTxxYmHvxC7eClx0BOrw9BmEiLxiQxKQwO2W1pGigCofwdYRnjcdccNGODtmxUhq13HPgfnUTBfNakf00ysceqLkE'
 
@@ -198,14 +198,16 @@ def connect():
 	for order in orders:
 		order_obj = {}
 		order_obj['order_id'] = order.checkout_id
-		items_list = {}
+		items_list = []
 		# order_id = order.checkout_id
 		# print(order_id)
 		order_items = OrderItemsInProgress.query.filter_by(checkout_id=order.checkout_id)
-		for item in order_items:
-			items_list['id'] = item.price_id
-			items_list['name'] = item.name
-			items_list['quantity'] = item.quantity
+		for i in order_items:
+			item = {}
+			item['id'] = i.price_id
+			item['name'] = i.name
+			item['quantity'] = i.quantity
+			items_list.append(item)
 		
 		order_obj['items_list'] = items_list
 		array_of_objects.append(order_obj)

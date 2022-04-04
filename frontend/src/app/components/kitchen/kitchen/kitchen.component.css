@@ -1,0 +1,42 @@
+.mainBody {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.order>h1 {
+    margin-left: 10px;
+    color: #263238;
+    font-weight: 500;
+}
+
+.order {
+    flex-basis: 80%;
+    overflow-y: scroll;
+}
+
+.order>h1 {
+    font-size: 80px;
+    line-height: 80px;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+kitchen-item {
+    padding-left: 15px;
+    padding-top: 15px;
+}
+
+.order-c {
+    width: 200px;
+    height: 200px;
+    overflow: scroll;
+}
+
+.items-list {
+    display: flex;
+    justify-content: space-between;
+}
