@@ -13,6 +13,7 @@ import { ItemComponent } from './components/customer/item/item.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CartComponent } from './components/customer/cart/cart.component';
+import { MatRippleModule } from '@angular/material/core';
 
 // ... other imports
 import { FormsModule } from '@angular/forms';
