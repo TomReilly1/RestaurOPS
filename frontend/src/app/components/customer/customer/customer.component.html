@@ -9,12 +9,7 @@
         <h1>Your cart</h1>
         <!-- <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name"></cart-item> -->
         <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name" [quantity]="item.quantity"></cart-item>
-        
-        <!-- <div class="cartItems">
-            <app-item *ngFor="let item of cartItems; let i = index" [price]="item.price" [name]="item.name">
 
-            </app-item>
-        </div> -->
         <div class="buttons">
             <mat-card>
                 {{calculateCartPrice()}}

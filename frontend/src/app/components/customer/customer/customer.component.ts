@@ -62,7 +62,6 @@ export class CustomerComponent implements OnInit {
     },
   ];
 
-
   cartItems: Item[] = [];
   taxPercent: number = 0.06;
   priceBeforeTax: number = 0;
@@ -91,6 +90,7 @@ export class CustomerComponent implements OnInit {
     for (let i of this.cartItems) {
       i.quantity = 1;
     }
+
     this.cartItems = [];
   }
 
@@ -112,7 +112,6 @@ export class CustomerComponent implements OnInit {
     this.priceAfterTax = Number(temp.toFixed(2));
   }
 
-
   submitToBackend() {
     // for (let i of this.cartItems) {
     //   this.http.post<Item>('http://127.0.0.1:5000/', {'id': i.id, 'name': i.name, 'price': i.price}).subscribe();
@@ -128,7 +127,5 @@ export class CustomerComponent implements OnInit {
     );  
 
     this.clearCart();
-
   }
-
 }

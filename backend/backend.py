@@ -1,6 +1,4 @@
-from crypt import methods
-from email.policy import default
-from flask import Flask, redirect, render_template, request, jsonify, url_for
+from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
@@ -8,6 +6,7 @@ import stripe
 import json
 import os
 from flask_socketio import SocketIO, send, emit
+
 
 
 ######### CONFIG #########
@@ -19,9 +18,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:pass@192.168.122.90:3306/re
 app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQxfd7PK3amQGi6RHdl9Xx966Bjas1HlDH0B9A7N00MjcbjqJX'
 app.config['STRIPE_SECRET_KEY'] =  'sk_test_51KLWJVKyPdTxxYmHvxC7eClx0BOrw9BmEiLxiQxKQwO2W1pGigCofwdYRnjcdccNGODtmxUhq13HPgfnUTBfNakf00ysceqLkE'
 
-
 db = SQLAlchemy(app)
 
+STRIPE_PUBLIC_KEY = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQxfd7PK3amQGi6RHdl9Xx966Bjas1HlDH0B9A7N00MjcbjqJX'
 # strip_account = 'acct_1KLWJVKyPdTxxYmH'
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 WEBHOOK_SECRET = 'whsec_1085cd4ee6ad114505bff0f0241f03665fe4defb002a0ef8599ffb342728de82'
