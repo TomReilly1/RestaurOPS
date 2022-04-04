@@ -1,6 +1,7 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Item } from 'src/app/interfaces/item';
+import { BackendService } from 'src/app/services/backend/backend.service';
 
 
 @Component({
@@ -9,7 +10,7 @@ import { Item } from 'src/app/interfaces/item';
   styleUrls: ['./customer.component.css']
 })
 @Injectable()
-export class CustomerComponent implements OnInit {
+export class CustomerComponent {
 
   items: Item[] = [
     {
@@ -68,10 +69,7 @@ export class CustomerComponent implements OnInit {
   taxTotal: number = 0;
   priceAfterTax: number = 0;
 
-  constructor(private http: HttpClient) { }
-
-  ngOnInit(): void {
-  }
+  constructor(private backend: BackendService) { }
 
   addToCart(addedItem: Item) {
     if (this.cartItems.some(i => i.id === addedItem.id)) {
@@ -113,19 +111,12 @@ export class CustomerComponent implements OnInit {
   }
 
   submitToBackend() {
-    // for (let i of this.cartItems) {
-    //   this.http.post<Item>('http://127.0.0.1:5000/', {'id': i.id, 'name': i.name, 'price': i.price}).subscribe();
-    // }
-    // this.http.post('http://127.0.0.1:5000/', this.cartItems).subscribe(
-    //   response => console.log("Success! ", response),
-    //   error => console.error("Error: ", error)
-    // );
-
-    this.http.post('http://localhost:4242/api/create-checkout-session', this.cartItems,{responseType: "text"}).subscribe(
-      response => window.location.href = response,
+    this.backend.createCheckoutSession(this.cartItems).subscribe(
+      response => {
+        window.location.href = response;
+        this.clearCart();
+      },
       error => console.error("Error: ", error)
-    );  
-
-    this.clearCart();
+    );
   }
 }
