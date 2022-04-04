@@ -1,6 +1,7 @@
 .example-card {
     max-width: 150px;
     background-color: white;
+    height: 175px;
 }
 
 mat-card-header {

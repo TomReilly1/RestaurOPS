@@ -8,16 +8,12 @@
     margin-left: 10px;
     color: #263238;
     font-weight: 500;
+    font-size: 80px;
+    line-height: 80px;
 }
 
 .items {
     flex-basis: 80%;
-    overflow-y: scroll;
-}
-
-.items>h1 {
-    font-size: 80px;
-    line-height: 80px;
 }
 
 .grid {
