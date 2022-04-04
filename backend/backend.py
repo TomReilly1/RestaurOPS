@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:Jkll233-=@192.168.122.90:3306/restops'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:pass@192.168.122.90:3306/restops'
 app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQxfd7PK3amQGi6RHdl9Xx966Bjas1HlDH0B9A7N00MjcbjqJX'
 app.config['STRIPE_SECRET_KEY'] =  'sk_test_51KLWJVKyPdTxxYmHvxC7eClx0BOrw9BmEiLxiQxKQwO2W1pGigCofwdYRnjcdccNGODtmxUhq13HPgfnUTBfNakf00ysceqLkE'
 
@@ -151,6 +151,30 @@ def webhook():
 			print('Unhandled event type {}'.format(event['type']))
 
 		return jsonify(success=True)
+
+
+@app.route('/api/mark-order-complete', methods=['POST'])
+def completeOrder():
+	request_data = request.get_json()
+	print(request_data['order_id'])
+	print(request_data['items_list'])
+
+	l_order_id = request_data['order_id']
+	# l_items_list = request_data['items_list']
+
+	OrderItemsInProgress.query.filter_by(checkout_id=l_order_id).delete()
+	db.session.commit()
+
+	OrdersInProgress.query.filter_by(checkout_id=l_order_id).delete()
+	db.session.commit()
+
+	# for i in l_items_list:
+	# 	price_id = i['id']
+	# 	name = i['name']
+	# 	quantity = i['quantity']
+	# 	db.session.delete
+
+	return jsonify("ORDER MARKED AS COMPLETED RECEIVED")
 
 
 # @app.route('/api/add-order-to-kitchen', methods=['POST', 'GET'])

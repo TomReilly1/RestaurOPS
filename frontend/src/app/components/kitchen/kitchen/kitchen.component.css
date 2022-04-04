@@ -1,13 +1,14 @@
 .mainBody {
-    display: flex;
+    /* display: flex; */
     height: 100%;
     width: 100%;
 }
 
-.order>h1 {
-    margin-left: 10px;
-    color: #263238;
-    font-weight: 500;
+#kitchen-heading {
+    margin: 0;
+    width: 100% !important;
+    height: 50px;
+    flex-shrink: unset;
 }
 
 .order {
@@ -39,4 +40,14 @@ kitchen-item {
 .items-list {
     display: flex;
     justify-content: space-between;
+}
+
+.items-list span:first-child{
+    padding-left: 10px;
+    width: 70%;
+}
+
+.items-list span:last-child{
+    text-align: center;
+    width: 25%;
 }
