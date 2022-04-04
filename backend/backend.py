@@ -7,12 +7,15 @@ from datetime import datetime
 import stripe
 import json
 import os
+from flask_socketio import SocketIO, send, emit
+
 
 ######### CONFIG #########
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:Jkll233-=@192.168.122.90:3306/restops'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:pass@192.168.122.90:3306/restops'
 app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQxfd7PK3amQGi6RHdl9Xx966Bjas1HlDH0B9A7N00MjcbjqJX'
 app.config['STRIPE_SECRET_KEY'] =  'sk_test_51KLWJVKyPdTxxYmHvxC7eClx0BOrw9BmEiLxiQxKQwO2W1pGigCofwdYRnjcdccNGODtmxUhq13HPgfnUTBfNakf00ysceqLkE'
 
@@ -57,52 +60,6 @@ class OrderItemsInProgress(db.Model):
 
 
 ######### APIs #########
-# @app.route('/', methods=['POST', 'GET'])
-# def cart():
-# 	"""
-# 	get request data from Angular
-# 	file = customer.component.ts
-# 	method = submitToBackend()
-# 	"""
-# 	request_data = request.get_json()
-
-# 	if request.method == 'POST':
-# 		if request_data is not None:
-# 			"""
-# 			We must first initialize the order in the 'orders' table on the
-# 			mysql db. Then we retrieve the 'order_id' that was generated for
-# 			the current order. We must do this instead of creating the 'order_id'
-# 			on the backend because the 'order_id' is auto_incremented
-# 			"""
-# 			# use only to initialize tables
-# 			#db.create_all()
-
-# 			# initialize the order and add it to the 'orders' table in mysql db
-# 			order_entry = Orders(datetime.now())
-# 			db.session.add(order_entry)
-# 			db.session.commit()
-
-# 			# get the 'order_id' from the database
-# 			current_order = Orders.query.order_by(Orders.order_id.desc()).first()
-# 			current_order_id = current_order.order_id
-# 			#print(current_order_id.order_id)
-
-# 			for i in request_data:
-# 				order_content = OrderItems(
-# 					current_order_id,	# order_id
-# 					i['id'],			# item_id
-# 					i['name'],			# name
-# 					i['price'])			# price
-# 				db.session.add(order_content)
-			
-# 			db.session.commit()
-
-# 		return render_template('flask.html', msg=request_data)
-# 	else:
-# 		return render_template('flask.html', msg='This is a GET')
-
-
-
 @app.route('/api/create-checkout-session', methods=['POST', 'GET'])
 def createCheckoutSession():
 	request_data = request.get_json()
@@ -213,9 +170,61 @@ def cancel():
 	return render_template('cancel.html')
 
 
+# @socketio.event
+# def message_in(data):
+# 	print('Received data: ', data)
+
+# @socketio.event
+# def message_out():
+# 	send("This message is sent from the Flask server on :4242")
+
+@socketio.on('message')
+def msg_client_to_server(data):
+	print('received message: ' + data)
+
+@socketio.on('message')
+def msg_server_to_client():
+	# send(message, namespace='/kitchen')
+	print("GETTING")
+	send("HELLO FROM FLASK")
+
+@socketio.on('connect')
+def connect():
+	print("EMITTING")
+
+	array_of_objects = []
+
+	orders = OrdersInProgress.query.all()
+	print(orders)
+	for order in orders:
+		order_obj = {}
+		order_obj['order_id'] = order.checkout_id
+		items_list = {}
+		# order_id = order.checkout_id
+		# print(order_id)
+		order_items = OrderItemsInProgress.query.filter_by(checkout_id=order.checkout_id)
+		for item in order_items:
+			items_list['id'] = item.price_id
+			items_list['name'] = item.name
+			items_list['quantity'] = item.quantity
+		
+		order_obj['items_list'] = items_list
+		array_of_objects.append(order_obj)
+
+
+	emit('connect', array_of_objects)
+
+# @socketio.on('message')
+# def handle_message(message):
+#     send(message)
+
+# @socketio.on('json')
+# def handle_json(json):
+#     send(json, json=True)
 
 if __name__ == '__main__':
 	# app.run(debug=True, host='0.0.0.0')
-	app.run(debug=True, port=4242)
+	# app.run(debug=True, port=4242)
+	socketio.run(app, debug=True, port=4242)
 
 

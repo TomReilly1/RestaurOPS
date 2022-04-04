@@ -14,6 +14,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CartComponent } from './components/customer/cart/cart.component';
 
+// ... other imports
+import { FormsModule } from '@angular/forms';
+import { SocketIoModule } from 'ngx-socket-io';
+//const config: SocketIoConfig = { url: 'ws://localhost:4242', options: {} };
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +26,7 @@ import { CartComponent } from './components/customer/cart/cart.component';
     CartComponent,
     CustomerComponent,
     KitchenComponent,
-    ItemComponent
+    ItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,7 +34,10 @@ import { CartComponent } from './components/customer/cart/cart.component';
     BrowserAnimationsModule,
     HttpClientModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    FormsModule,
+    SocketIoModule,
+    //SocketIoModule.forRoot(config),
   ],
   providers: [],
   bootstrap: [AppComponent]
