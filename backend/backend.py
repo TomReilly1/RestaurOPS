@@ -1,20 +1,22 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, redirect, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
 import stripe
-import json
-import os
+# import json
+# import os
 from flask_socketio import SocketIO, send, emit
-
+import eventlet
+# eventlet.monkey_patch()
 
 
 ######### CONFIG #########
 app = Flask(__name__)
 CORS(app)
-socketio = SocketIO(app, cors_allowed_origins="*")
+# socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:pass@192.168.122.90:3306/restops'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:restops123@192.168.122.90:3306/restops'
 app.config['STRIPE_PUBLIC_KEY'] = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQxfd7PK3amQGi6RHdl9Xx966Bjas1HlDH0B9A7N00MjcbjqJX'
 app.config['STRIPE_SECRET_KEY'] =  'sk_test_51KLWJVKyPdTxxYmHvxC7eClx0BOrw9BmEiLxiQxKQwO2W1pGigCofwdYRnjcdccNGODtmxUhq13HPgfnUTBfNakf00ysceqLkE'
 
@@ -56,6 +58,19 @@ class OrderItemsInProgress(db.Model):
 		self.checkout_id = checkout_id
 		self.name = name
 		self.quantity = quantity
+
+
+class Test(db.Model):
+	__tablename__ = 'test'
+
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(200))
+
+	def __init__(self, name):
+		self.name = name
+
+	def __repr__(self):
+		return f'Id: {self.id}, Name: {self.name}'
 
 
 ######### APIs #########
@@ -127,7 +142,29 @@ def webhook():
 			print(line_items_object)
 			line_items_array = line_items_object['data']
 
-			#print(current_order_id.order_id)
+			# #print(current_order_id.order_id)
+
+			# for i in line_items_array:
+			# 	# price_id = i['price']['id']
+			# 	print(i['price'])
+			# 	print(i['price']['id'])
+
+			# 	order_items_content = OrderItemsInProgress(
+			# 		i['price']['id'],	# price id
+			# 		chkout_session_id,	# checkout session id
+			# 		i['description'],	# name
+			# 		i['quantity']		# quantity
+			# 	)
+			# 	db.session.add(order_items_content)
+			
+			# db.session.commit()
+
+
+			# emit('newOrder', event['data']['object'])
+			ioOrder = {
+				'order_id': chkout_session_id,
+				'items_list': {}
+			}
 
 			for i in line_items_array:
 				# price_id = i['price']['id']
@@ -135,15 +172,25 @@ def webhook():
 				print(i['price']['id'])
 
 				order_items_content = OrderItemsInProgress(
-					i['price']['id'],	# price id
-					chkout_session_id,	# checkout session id
-					i['description'],	# name
-					i['quantity']		# quantity
+					i['price']['id'],    # price id
+					chkout_session_id,    # checkout session id
+					i['description'],    # name
+					i['quantity']        # quantity
 				)
 				db.session.add(order_items_content)
+
+				# ioOrder.items_list.add({
+				# 	'id': i['price']['id'],
+				# 	'name': i['description'],
+				# 	'quantity': i['quantity']
+				# })
+				ioOrder['items_list']['id'] = i['price']['id']
+				ioOrder['items_list']['name'] = i['description']
+				ioOrder['items_list']['quantity'] = i['quantity']
 			
 			db.session.commit()
-
+			
+			socketio.emit("newOrder", ioOrder)
 
 
 		# handle other event types
@@ -177,12 +224,8 @@ def completeOrder():
 	return jsonify("ORDER MARKED AS COMPLETED RECEIVED")
 
 
-# @app.route('/api/add-order-to-kitchen', methods=['POST', 'GET'])
-# def addOrder():
-# 	request_data = request.get_json()
-# 	return request_data
 
-
+######### TEMPLATES #########
 @app.route("/success")
 def success():
 	return render_template('success.html')
@@ -193,23 +236,16 @@ def cancel():
 	return render_template('cancel.html')
 
 
-# @socketio.event
-# def message_in(data):
-# 	print('Received data: ', data)
 
-# @socketio.event
-# def message_out():
-# 	send("This message is sent from the Flask server on :4242")
+######### WEBSOCKET #########
+# @socketio.on('message')
+# def msg_client_to_server(data):
+# 	print('received message: ' + data)
 
-@socketio.on('message')
-def msg_client_to_server(data):
-	print('received message: ' + data)
-
-@socketio.on('message')
-def msg_server_to_client():
-	# send(message, namespace='/kitchen')
-	print("GETTING")
-	send("HELLO FROM FLASK")
+# @socketio.on('message')
+# def msg_server_to_client():
+# 	print("GETTING")
+# 	send("HELLO FROM FLASK")
 
 @socketio.on('connect')
 def connect():
@@ -239,17 +275,11 @@ def connect():
 
 	emit('connect', array_of_objects)
 
-# @socketio.on('message')
-# def handle_message(message):
-#     send(message)
 
-# @socketio.on('json')
-# def handle_json(json):
-#     send(json, json=True)
+
+
 
 if __name__ == '__main__':
 	# app.run(debug=True, host='0.0.0.0')
 	# app.run(debug=True, port=4242)
 	socketio.run(app, debug=True, port=4242)
-
-
