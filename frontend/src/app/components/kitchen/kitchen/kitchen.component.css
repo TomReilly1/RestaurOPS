@@ -1,0 +1,53 @@
+.mainBody {
+    /* display: flex; */
+    height: 100%;
+    width: 100%;
+}
+
+#kitchen-heading {
+    margin: 0;
+    width: 100% !important;
+    height: 50px;
+    flex-shrink: unset;
+}
+
+.order {
+    flex-basis: 80%;
+    overflow-y: scroll;
+}
+
+.order>h1 {
+    font-size: 80px;
+    line-height: 80px;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+kitchen-item {
+    padding-left: 15px;
+    padding-top: 15px;
+}
+
+.order-c {
+    width: 200px;
+    height: 200px;
+    overflow: scroll;
+}
+
+.items-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.items-list span:first-child{
+    padding-left: 10px;
+    width: 70%;
+}
+
+.items-list span:last-child{
+    text-align: center;
+    width: 25%;
+}

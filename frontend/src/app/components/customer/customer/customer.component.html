@@ -5,15 +5,22 @@
             <app-item *ngFor="let item of items" [price]="item.price" [name]="item.name" [image]="item.image" (click)="addToCart(item)"></app-item>
         </div>
     </div>
-    <div class="cart mat-elevation-z24">
+    <div class="cart">
         <h1>Your cart</h1>
-        <div class="cartItems">
-            <!-- *ngFor="let item of cartItem"  -->
- 
-        </div>
+        <!-- <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name"></cart-item> -->
+        <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name" [quantity]="item.quantity"></cart-item>
+
         <div class="buttons">
-            <button mat-raised-button color="primary">Submit</button>
-            <button mat-raised-button color="accent">Clear</button>
+            <mat-card>
+                {{calculateCartPrice()}}
+                <span>before tax: {{priceBeforeTax}}</span>
+                <br>
+                <span>tax: {{taxTotal}} ({{taxPercent * 100}}%)</span>
+                <br>
+                <span>Total: {{priceAfterTax}}</span>
+            </mat-card>
+            <button mat-raised-button color="primary" (click)="submitToBackend()">Submit</button>
+            <button mat-raised-button color="accent" (click)="clearCart()">Clear</button>
         </div>
     </div>
 </div>

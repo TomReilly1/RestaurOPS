@@ -8,16 +8,12 @@
     margin-left: 10px;
     color: #263238;
     font-weight: 500;
+    font-size: 80px;
+    line-height: 80px;
 }
 
 .items {
     flex-basis: 80%;
-    overflow-y: scroll;
-}
-
-.items>h1 {
-    font-size: 80px;
-    line-height: 80px;
 }
 
 .grid {
@@ -35,6 +31,7 @@ app-item {
     background-color: #3c3c3c;
     display: flex;
     flex-direction: column;
+    overflow: scroll;
 }
 
 .cart>h1 {
@@ -46,7 +43,15 @@ app-item {
 }
 
 .cartItems {
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+cart-item {
+    display: flex;
+    justify-content: center;
+    height: auto;
+    margin: 0 0 5px 0;
 }
 
 .buttons {

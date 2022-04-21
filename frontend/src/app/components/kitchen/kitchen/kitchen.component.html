@@ -1,1 +1,15 @@
-<p>kitchen works!</p>
+<div class="mainBody">
+    <h1 id="kitchen-heading">KITCHEN</h1>
+    <div class="orders-container">
+        <div *ngFor="let order of ordersInProgress" class="order-c">
+            <div><span>{{ order.order_id }}</span></div>
+            <br>
+            <div *ngFor="let item of order.items_list; let i = index" class="items-list">
+                <span>{{ item.name }}:</span>
+                <span>{{ item.quantity }}</span>
+            </div>
+            <div>
+                <button mat-raised-button color="primary" (click)="markAsCompleted(order)">Mark as Completed</button>
+            </div>
+        </div>
+    </div>
