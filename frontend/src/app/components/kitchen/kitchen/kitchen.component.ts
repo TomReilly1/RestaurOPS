@@ -25,6 +25,10 @@ export class KitchenComponent implements OnInit {
       },
       error => console.error("Error: ", error)
     );
+
+    //remove order from ordersInProgress array
+    let index = this.ordersInProgress.indexOf(order);
+    this.ordersInProgress.splice(index, 1);
   }
 
 
