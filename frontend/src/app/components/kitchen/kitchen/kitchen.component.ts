@@ -19,7 +19,10 @@ export class KitchenComponent implements OnInit {
 
   markAsCompleted(order: KitchenOrder) {
     this.backend.sendCompletedStatus(order).subscribe(
-      response => console.log("Response: ", response),
+      response => {
+        console.log("Response: ", response)
+        location.reload()
+      },
       error => console.error("Error: ", error)
     );
 
@@ -36,18 +39,27 @@ export class KitchenComponent implements OnInit {
 
 
   ngOnInit(): void {
+    // WebSocket for intial connection
     this.webSocketService.listen('connect').subscribe((data: any) => {
       this.temp = data;
 
-      for (let i = 0; i < this.temp.length; i++) {
-        this.ordersInProgress.push(data[i]);
+      if (this.temp === undefined) {
+        console.log("Undefined")
+      }
+      else {
+        for (let i = 0; i < this.temp.length; i++) {
+          this.ordersInProgress.push(data[i]);
+        }
       }
 
       console.log(this.ordersInProgress);
     })
 
+    // WebSocket for new orders
     this.webSocketService.listen('newOrder').subscribe((data: any) => {
       this.ordersInProgress.push(data);
+      
+      console.log(this.ordersInProgress);
     });
   }
 }
