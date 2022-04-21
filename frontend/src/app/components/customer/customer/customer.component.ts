@@ -69,6 +69,8 @@ export class CustomerComponent {
   taxTotal: number = 0;
   priceAfterTax: number = 0;
 
+  inPaymentMode = false;
+
   constructor(private backend: BackendService) { }
 
   addToCart(addedItem: Item) {
@@ -79,9 +81,7 @@ export class CustomerComponent {
       this.cartItems.push(addedItem);
     }
 
-    
-    // this.http.post<Item>('http://192.168.0.68:5000/', {'name': item.name, 'price': item.price}).subscribe();
-    // this.http.post<Item>('http://127.0.0.1:5000/', {'name': item.name, 'price': item.price}).subscribe();
+    this.calculateCartPrice();
   }
 
   clearCart() {
@@ -90,6 +90,7 @@ export class CustomerComponent {
     }
 
     this.cartItems = [];
+    this.calculateCartPrice();
   }
 
   calculateCartPrice() {
@@ -111,10 +112,21 @@ export class CustomerComponent {
   }
 
   submitToBackend() {
+    this.inPaymentMode = true;
     this.backend.createCheckoutSession(this.cartItems).subscribe(
       response => {
-        window.location.href = response;
-        this.clearCart();
+        let bc = new BroadcastChannel('checkout');
+        bc.onmessage = (event) => {
+          if (event.data == "success") {
+            this.inPaymentMode = false;
+            console.log("payment success!!");
+            this.clearCart();
+          } else {
+            this.inPaymentMode = false;
+            console.log("payment failed!!");
+          }
+        }
+        window.open(response.url, '_blank');
       },
       error => console.error("Error: ", error)
     );

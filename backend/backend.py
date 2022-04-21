@@ -84,8 +84,8 @@ def createCheckoutSession():
 	checkout_session = stripe.checkout.Session.create(
 		line_items=line_items_input,
 		mode='payment',
-		success_url= DOMAIN + '/success',
-		cancel_url= DOMAIN + '/cancel',
+		success_url= DOMAIN + '/handler/success-checkout',
+		cancel_url= DOMAIN + '/handler/failure-checkout',
 	)
 
 	return checkout_session.url

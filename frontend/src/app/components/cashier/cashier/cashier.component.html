@@ -1,1 +1,26 @@
-<p>cashier works!</p>
+<div class="mainBody">
+    <div class="items">
+        <h1>Select product</h1>
+        <div class="grid">
+            <app-item *ngFor="let item of items" [price]="item.price" [name]="item.name" [image]="item.image" (click)="addToCart(item)"></app-item>
+        </div>
+    </div>
+    <div class="cart">
+        <h1>Customer's cart</h1>
+        <!-- <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name"></cart-item> -->
+        <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name" [quantity]="item.quantity"></cart-item>
+
+        <div class="buttons">
+            <mat-card>
+                {{calculateCartPrice()}}
+                <span>before tax: {{priceBeforeTax}}</span>
+                <br>
+                <span>tax: {{taxTotal}} ({{taxPercent * 100}}%)</span>
+                <br>
+                <span>Total: {{priceAfterTax}}</span>
+            </mat-card>
+            <button mat-raised-button color="primary" (click)="submitToBackend()">Submit</button>
+            <button mat-raised-button color="accent" (click)="clearCart()">Clear</button>
+        </div>
+    </div>
+</div>

@@ -1,3 +1,8 @@
+<div *ngIf="inPaymentMode" class="paymentOverlay">
+    <!-- black overlay with text "present your card"-->
+    <h1 style="text-align: center; font-size: 100px; width: 100%;">Please present your card</h1>
+</div>
+
 <div class="mainBody">
     <div class="items">
         <h1>Select your product</h1>
@@ -12,12 +17,11 @@
 
         <div class="buttons">
             <mat-card>
-                {{calculateCartPrice()}}
-                <span>before tax: {{priceBeforeTax}}</span>
+                <span>Subtotal: ${{priceBeforeTax}}</span>
                 <br>
-                <span>tax: {{taxTotal}} ({{taxPercent * 100}}%)</span>
+                <span>Tax: ${{taxTotal}} ({{taxPercent * 100}}%)</span>
                 <br>
-                <span>Total: {{priceAfterTax}}</span>
+                <span>Grand Total: ${{priceAfterTax}}</span>
             </mat-card>
             <button mat-raised-button color="primary" (click)="submitToBackend()">Submit</button>
             <button mat-raised-button color="accent" (click)="clearCart()">Clear</button>
