@@ -34,9 +34,8 @@ export class KitchenComponent implements OnInit {
   ) { }
 
 
-
-
   ngOnInit(): void {
+    // WebSocket for intial connection
     this.webSocketService.listen('connect').subscribe((data: any) => {
       this.temp = data;
 
@@ -47,14 +46,16 @@ export class KitchenComponent implements OnInit {
         for (let i = 0; i < this.temp.length; i++) {
           this.ordersInProgress.push(data[i]);
         }
-        // location.reload();
       }
 
       console.log(this.ordersInProgress);
     })
 
+    // WebSocket for new orders
     this.webSocketService.listen('newOrder').subscribe((data: any) => {
       this.ordersInProgress.push(data);
+      
+      console.log(this.ordersInProgress);
     });
   }
 }

@@ -3,11 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
 import stripe
-# import json
-# import os
 from flask_socketio import SocketIO, send, emit
 import eventlet
-# eventlet.monkey_patch()
+
 
 
 ######### CONFIG #########
@@ -23,7 +21,7 @@ app.config['STRIPE_SECRET_KEY'] =  'sk_test_51KLWJVKyPdTxxYmHvxC7eClx0BOrw9BmEiL
 db = SQLAlchemy(app)
 
 STRIPE_PUBLIC_KEY = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQxfd7PK3amQGi6RHdl9Xx966Bjas1HlDH0B9A7N00MjcbjqJX'
-# strip_account = 'acct_1KLWJVKyPdTxxYmH'
+# stripw_account = 'acct_1KLWJVKyPdTxxYmH'
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 WEBHOOK_SECRET = 'whsec_1085cd4ee6ad114505bff0f0241f03665fe4defb002a0ef8599ffb342728de82'
 DOMAIN = 'http://localhost:4242'
@@ -90,13 +88,11 @@ def createCheckoutSession():
 		cancel_url= DOMAIN + '/cancel',
 	)
 
-	# return redirect(checkout_session.url, code=303)
 	return checkout_session.url
 
 
 @app.route('/api/webhook', methods=['POST'])
 def webhook():
-	# stripe_payload = request.json
 	event = None
 	payload = request.data
 	sig_header = request.headers['STRIPE_SIGNATURE']
@@ -105,7 +101,6 @@ def webhook():
 		text_file.write(str(payload))
 
 	if request.method == 'POST':
-
 		try:
 			event = stripe.Webhook.construct_event(
 				payload, sig_header, WEBHOOK_SECRET
@@ -132,44 +127,28 @@ def webhook():
 			# use only to initialize tables
 			#db.create_all()
 			
-			# initialize the order in progress and add it to the table in mysql db
+			# Initialize the order in progress and add it to the table in mysql db
 			order_entry = OrdersInProgress(chkout_session_id, datetime.now())
 			db.session.add(order_entry)
 			db.session.commit()
 
-
+			# Gets the order items/food from the checkout session data
+			# In this case, what Stripe calls line items is what we call order items
 			line_items_object = stripe.checkout.Session.list_line_items(chkout_session_id)
 			print(line_items_object)
 			line_items_array = line_items_object['data']
 
-			# #print(current_order_id.order_id)
-
-			# for i in line_items_array:
-			# 	# price_id = i['price']['id']
-			# 	print(i['price'])
-			# 	print(i['price']['id'])
-
-			# 	order_items_content = OrderItemsInProgress(
-			# 		i['price']['id'],	# price id
-			# 		chkout_session_id,	# checkout session id
-			# 		i['description'],	# name
-			# 		i['quantity']		# quantity
-			# 	)
-			# 	db.session.add(order_items_content)
-			
-			# db.session.commit()
-
-
-			# emit('newOrder', event['data']['object'])
+			# initialize the order data to be sent over WebSocket via Socket.Io
 			ioOrder = {
 				'order_id': chkout_session_id,
-				'items_list': {}
+				'items_list': []
 			}
 
+			# adds every line item to the items_list array in the ioOrder dict
 			for i in line_items_array:
-				# price_id = i['price']['id']
 				print(i['price'])
 				print(i['price']['id'])
+				item = {}
 
 				order_items_content = OrderItemsInProgress(
 					i['price']['id'],    # price id
@@ -179,17 +158,16 @@ def webhook():
 				)
 				db.session.add(order_items_content)
 
-				# ioOrder.items_list.add({
-				# 	'id': i['price']['id'],
-				# 	'name': i['description'],
-				# 	'quantity': i['quantity']
-				# })
-				ioOrder['items_list']['id'] = i['price']['id']
-				ioOrder['items_list']['name'] = i['description']
-				ioOrder['items_list']['quantity'] = i['quantity']
+
+				item['id'] = i['price']['id']
+				item['name'] = i['description']
+				item['quantity'] = i['quantity']
+
+				ioOrder['items_list'].append(item)
 			
 			db.session.commit()
 			
+			# emits the ioOrder data to kitchen.component.ts on the newOrder event name
 			socketio.emit("newOrder", ioOrder)
 
 
@@ -197,6 +175,7 @@ def webhook():
 		else:
 			print('Unhandled event type {}'.format(event['type']))
 
+		# redirects to the success page
 		return jsonify(success=True)
 
 
@@ -207,7 +186,6 @@ def completeOrder():
 	print(request_data['items_list'])
 
 	l_order_id = request_data['order_id']
-	# l_items_list = request_data['items_list']
 
 	OrderItemsInProgress.query.filter_by(checkout_id=l_order_id).delete()
 	db.session.commit()
@@ -215,13 +193,8 @@ def completeOrder():
 	OrdersInProgress.query.filter_by(checkout_id=l_order_id).delete()
 	db.session.commit()
 
-	# for i in l_items_list:
-	# 	price_id = i['id']
-	# 	name = i['name']
-	# 	quantity = i['quantity']
-	# 	db.session.delete
 
-	return jsonify("ORDER MARKED AS COMPLETED RECEIVED")
+	return jsonify("ORDER HAS BEEN MARKED AS COMPLETED")
 
 
 
@@ -238,15 +211,6 @@ def cancel():
 
 
 ######### WEBSOCKET #########
-# @socketio.on('message')
-# def msg_client_to_server(data):
-# 	print('received message: ' + data)
-
-# @socketio.on('message')
-# def msg_server_to_client():
-# 	print("GETTING")
-# 	send("HELLO FROM FLASK")
-
 @socketio.on('connect')
 def connect():
 	print("EMITTING")
@@ -274,8 +238,6 @@ def connect():
 
 
 	emit('connect', array_of_objects)
-
-
 
 
 
