@@ -24,7 +24,7 @@ STRIPE_PUBLIC_KEY = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQ
 # stripw_account = 'acct_1KLWJVKyPdTxxYmH'
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 WEBHOOK_SECRET = 'whsec_1085cd4ee6ad114505bff0f0241f03665fe4defb002a0ef8599ffb342728de82'
-DOMAIN = 'http://localhost:4242'
+FRONT_DOMAIN = 'http://localhost:4200'
 
 
 ######### MODELS #########
@@ -84,8 +84,8 @@ def createCheckoutSession():
 	checkout_session = stripe.checkout.Session.create(
 		line_items=line_items_input,
 		mode='payment',
-		success_url= DOMAIN + '/handler/success-checkout',
-		cancel_url= DOMAIN + '/handler/failure-checkout',
+		success_url= FRONT_DOMAIN + '/handler/success-checkout',
+		cancel_url= FRONT_DOMAIN + '/handler/failure-checkout',
 	)
 
 	return checkout_session.url
@@ -120,7 +120,7 @@ def webhook():
 			except:
 				print('COULD NOT PRINT EVENT')
 
-			#session = event['data']['object']
+
 			chkout_session_id = event['data']['object']['id']
 			print(chkout_session_id)
 
@@ -199,14 +199,14 @@ def completeOrder():
 
 
 ######### TEMPLATES #########
-@app.route("/success")
-def success():
-	return render_template('success.html')
+# @app.route("/success")
+# def success():
+# 	return render_template('success.html')
 
 
-@app.route("/cancel")
-def cancel():
-	return render_template('cancel.html')
+# @app.route("/cancel")
+# def cancel():
+# 	return render_template('cancel.html')
 
 
 
@@ -223,8 +223,7 @@ def connect():
 		order_obj = {}
 		order_obj['order_id'] = order.checkout_id
 		items_list = []
-		# order_id = order.checkout_id
-		# print(order_id)
+
 		order_items = OrderItemsInProgress.query.filter_by(checkout_id=order.checkout_id)
 		for i in order_items:
 			item = {}
