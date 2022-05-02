@@ -2,6 +2,7 @@ import { Component, Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Item } from 'src/app/interfaces/item';
 import { BackendService } from 'src/app/services/backend/backend.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -10,7 +11,7 @@ import { BackendService } from 'src/app/services/backend/backend.service';
   styleUrls: ['./customer.component.css']
 })
 @Injectable()
-export class CustomerComponent {
+export class CustomerComponent implements OnInit{
 
   items: Item[] = [
     {
@@ -71,7 +72,18 @@ export class CustomerComponent {
 
   // inPaymentMode = false;
 
-  constructor(private backend: BackendService) { }
+  constructor(private backend: BackendService, private activatedRoute: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe(x => {
+      let orders = x.orders;
+
+      //convert from base64url and then from json
+      let ordersJson = atob(orders);
+      let ordersJsonParsed = JSON.parse(ordersJson);
+      this.items = ordersJsonParsed;
+    })
+  }
 
   addToCart(addedItem: Item) {
     if (this.cartItems.some(i => i.id === addedItem.id)) {
@@ -120,25 +132,4 @@ export class CustomerComponent {
       error => console.error("Error: ", error)
     );
   }
-
-  // submitToBackend() {
-  //   this.inPaymentMode = true;
-  //   this.backend.createCheckoutSession(this.cartItems).subscribe(
-  //     response => {
-  //       let bc = new BroadcastChannel('checkout');
-  //       bc.onmessage = (event) => {
-  //         if (event.data == "success") {
-  //           this.inPaymentMode = false;
-  //           console.log("payment success!!");
-  //           this.clearCart();
-  //         } else {
-  //           this.inPaymentMode = false;
-  //           console.log("payment failed!!");
-  //         }
-  //       }
-  //       window.open(response.url, '_blank');
-  //     },
-  //     error => console.error("Error: ", error)
-  //   );
-  // }
 }

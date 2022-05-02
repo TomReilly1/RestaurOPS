@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-failed-checkout',
@@ -7,12 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FailedCheckoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
-    let bc = new BroadcastChannel("checkout");
-    bc.postMessage("failed");
-    close();
-  }
+    this.activatedRoute.queryParams.subscribe(x => {
+        let type = x.type;
+        let order = x.orders;
 
+        if (type == "customer") {
+            this.router.navigateByUrl("/customer?orders=" + order);
+        } else if (type == "cashier") {
+            this.router.navigateByUrl("/cashier?orders=" + order);
+        }
+    });
+  }
 }

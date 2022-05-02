@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Item } from 'src/app/interfaces/item';
 import { BackendService } from 'src/app/services/backend/backend.service';
 
@@ -65,7 +66,18 @@ export class CashierComponent {
   taxTotal: number = 0;
   priceAfterTax: number = 0;
 
-  constructor(private backend: BackendService) { }
+  constructor(private backend: BackendService, private activatedRoute: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe(x => {
+      let orders = x.orders;
+
+      //convert from base64url and then from json
+      let ordersJson = atob(orders);
+      let ordersJsonParsed = JSON.parse(ordersJson);
+      this.items = ordersJsonParsed;
+    })
+  }
 
   addToCart(addedItem: Item) {
     if (this.cartItems.some(i => i.id === addedItem.id)) {
