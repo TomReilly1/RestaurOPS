@@ -69,7 +69,7 @@ export class CustomerComponent {
   taxTotal: number = 0;
   priceAfterTax: number = 0;
 
-  inPaymentMode = false;
+  // inPaymentMode = false;
 
   constructor(private backend: BackendService) { }
 
@@ -112,23 +112,33 @@ export class CustomerComponent {
   }
 
   submitToBackend() {
-    this.inPaymentMode = true;
     this.backend.createCheckoutSession(this.cartItems).subscribe(
       response => {
-        let bc = new BroadcastChannel('checkout');
-        bc.onmessage = (event) => {
-          if (event.data == "success") {
-            this.inPaymentMode = false;
-            console.log("payment success!!");
-            this.clearCart();
-          } else {
-            this.inPaymentMode = false;
-            console.log("payment failed!!");
-          }
-        }
-        window.open(response.url, '_blank');
+        window.location.href = response;
+        this.clearCart();
       },
       error => console.error("Error: ", error)
     );
   }
+
+  // submitToBackend() {
+  //   this.inPaymentMode = true;
+  //   this.backend.createCheckoutSession(this.cartItems).subscribe(
+  //     response => {
+  //       let bc = new BroadcastChannel('checkout');
+  //       bc.onmessage = (event) => {
+  //         if (event.data == "success") {
+  //           this.inPaymentMode = false;
+  //           console.log("payment success!!");
+  //           this.clearCart();
+  //         } else {
+  //           this.inPaymentMode = false;
+  //           console.log("payment failed!!");
+  //         }
+  //       }
+  //       window.open(response.url, '_blank');
+  //     },
+  //     error => console.error("Error: ", error)
+  //   );
+  // }
 }
