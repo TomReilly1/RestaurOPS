@@ -6,12 +6,12 @@ import stripe
 from flask_socketio import SocketIO, send, emit
 import eventlet
 
-
+######### GLOBAL COUNTER #########
+# global_counter = 0
 
 ######### CONFIG #########
 app = Flask(__name__)
 CORS(app)
-# socketio = SocketIO(app, cors_allowed_origins="*")
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://tom:restops123@192.168.122.90:3306/restops'
@@ -21,7 +21,6 @@ app.config['STRIPE_SECRET_KEY'] =  'sk_test_51KLWJVKyPdTxxYmHvxC7eClx0BOrw9BmEiL
 db = SQLAlchemy(app)
 
 STRIPE_PUBLIC_KEY = 'pk_test_51KLWJVKyPdTxxYmH5qLhJotolMRrp5YzvR4Vn2csRCunIaXnxQxfd7PK3amQGi6RHdl9Xx966Bjas1HlDH0B9A7N00MjcbjqJX'
-# stripw_account = 'acct_1KLWJVKyPdTxxYmH'
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 WEBHOOK_SECRET = 'whsec_1085cd4ee6ad114505bff0f0241f03665fe4defb002a0ef8599ffb342728de82'
 FRONT_DOMAIN = 'http://localhost:4200'
@@ -57,6 +56,36 @@ class OrderItemsInProgress(db.Model):
 		self.name = name
 		self.quantity = quantity
 
+class OrdersBackup(db.Model):
+	__tablename__ = 'orders_backup'
+
+	checkout_id = db.Column(db.String(100), primary_key=True)
+	order_time = db.Column(db.DateTime)
+
+	def __init__(self, checkout_id, order_time):
+		self.checkout_id = checkout_id
+		self.order_time = order_time
+
+	def __repr__(self):
+		return f'{self.checkout_id}, {self.order_time}'
+
+class OrderItemsBackup(db.Model):
+	__tablename__ = 'order_items_backup'
+
+
+	order_item_id = db.Column(db.Integer, primary_key=True)
+	price_id = db.Column(db.String(100), nullable=False)
+	checkout_id = db.Column(db.String(100), db.ForeignKey('orders_backup.checkout_id'))
+	name = db.Column(db.String(100), nullable=False)
+	quantity = db.Column(db.Integer, nullable=False)
+
+	def __init__(self, order_item_id, price_id, checkout_id, name, quantity):
+		self.order_item_id = order_item_id
+		self.price_id = price_id
+		self.checkout_id = checkout_id
+		self.name = name
+		self.quantity = quantity
+
 
 class Test(db.Model):
 	__tablename__ = 'test'
@@ -84,6 +113,9 @@ def createCheckoutSession():
 	checkout_session = stripe.checkout.Session.create(
 		line_items=line_items_input,
 		mode='payment',
+		automatic_tax={
+			'enabled': True,
+		},
 		success_url= FRONT_DOMAIN + '/handler/success-checkout',
 		cancel_url= FRONT_DOMAIN + '/handler/failure-checkout',
 	)
@@ -97,8 +129,6 @@ def webhook():
 	payload = request.data
 	sig_header = request.headers['STRIPE_SIGNATURE']
 
-	with open("MY_LOG.txt", "w") as text_file:
-		text_file.write(str(payload))
 
 	if request.method == 'POST':
 		try:
@@ -133,7 +163,7 @@ def webhook():
 			db.session.commit()
 
 			# Gets the order items/food from the checkout session data
-			# In this case, what Stripe calls line items is what we call order items
+			# In this case, what Stripe calls 'line items' is what we call 'order items'
 			line_items_object = stripe.checkout.Session.list_line_items(chkout_session_id)
 			print(line_items_object)
 			line_items_array = line_items_object['data']
@@ -143,6 +173,13 @@ def webhook():
 				'order_id': chkout_session_id,
 				'items_list': []
 			}
+			# ioOrder = {
+			# 	'order_id': chkout_session_id,
+			# 	'order_num': global_counter,
+			# 	'items_list': []
+			# }
+
+			# global_counter += 1;
 
 			# adds every line item to the items_list array in the ioOrder dict
 			for i in line_items_array:
@@ -150,15 +187,16 @@ def webhook():
 				print(i['price']['id'])
 				item = {}
 
+				# For database
 				order_items_content = OrderItemsInProgress(
 					i['price']['id'],    # price id
-					chkout_session_id,    # checkout session id
+					chkout_session_id,   # checkout session id
 					i['description'],    # name
 					i['quantity']        # quantity
 				)
 				db.session.add(order_items_content)
 
-
+				# For Frontend/WebSocket
 				item['id'] = i['price']['id']
 				item['name'] = i['description']
 				item['quantity'] = i['quantity']
@@ -187,8 +225,37 @@ def completeOrder():
 
 	l_order_id = request_data['order_id']
 
+
+	# Initialize the backup order and add it to the table in mysql db
+	order_entry = OrdersBackup(l_order_id, datetime.now())
+	db.session.add(order_entry)
+	db.session.commit()
+
+
+	# Query the order items in progress to add to backup
+	order_items = OrderItemsInProgress.query.filter_by(checkout_id=l_order_id)
+
+	for i in order_items:
+		# convert query object to dictionary
+		i_dict = i.__dict__
+		print(f'DICT:{i_dict}')
+		print(i_dict['order_item_id'])
+
+		order_items_backup = OrderItemsBackup(
+			i_dict['order_item_id'],    # orded item id
+			i_dict['price_id'],   		# price id
+			i_dict['checkout_id'],		# checkout session id
+			i_dict['name'],    			# name
+			i_dict['quantity']        	# quantity
+		)
+		db.session.add(order_items_backup)
+	db.session.commit()
+
+	
+	
 	OrderItemsInProgress.query.filter_by(checkout_id=l_order_id).delete()
 	db.session.commit()
+
 
 	OrdersInProgress.query.filter_by(checkout_id=l_order_id).delete()
 	db.session.commit()
@@ -243,4 +310,8 @@ def connect():
 if __name__ == '__main__':
 	# app.run(debug=True, host='0.0.0.0')
 	# app.run(debug=True, port=4242)
+	# pw = input('Enter password:\n')
+	# connection_string = f'mysql://tom:{pw}@192.168.122.90:3306/restops'
+	# app.config['SQLALCHEMY_DATABASE_URI'] = connection_string
+	
 	socketio.run(app, debug=True, port=4242)
