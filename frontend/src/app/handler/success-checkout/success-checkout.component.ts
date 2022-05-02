@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-success-checkout',
@@ -7,12 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SuccessCheckoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
-    let bc = new BroadcastChannel("checkout");
-    bc.postMessage("success");
-    close();
+    this.router.navigateByUrl("/")
   }
 
 }
