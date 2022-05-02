@@ -122,7 +122,7 @@ def createCheckoutSession():
 		#success_url= FRONT_DOMAIN + '/handler/success-checkout',
 		#cancel_url= FRONT_DOMAIN + '/handler/failure-checkout',
 		success_url= f'{FRONT_DOMAIN}/handler/success-checkout?type={request_data["type"]}',
-		cancel_url= f'{FRONT_DOMAIN}/handler/cancel-checkout?type={request_data["type"]}',
+		cancel_url= f'{FRONT_DOMAIN}/handler/failure-checkout?type={request_data["type"]}',
 
 		metadata= {'interface': request_data['type']}
 	)
