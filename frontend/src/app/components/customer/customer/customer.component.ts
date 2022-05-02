@@ -2,7 +2,7 @@ import { Component, Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Item } from 'src/app/interfaces/item';
 import { BackendService } from 'src/app/services/backend/backend.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -72,7 +72,7 @@ export class CustomerComponent implements OnInit{
 
   // inPaymentMode = false;
 
-  constructor(private backend: BackendService, private activatedRoute: ActivatedRoute) { }
+  constructor(private backend: BackendService, private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(x => {
@@ -103,6 +103,12 @@ export class CustomerComponent implements OnInit{
     }
 
     this.cartItems = [];
+    this.router.navigate([], {
+      queryParams: {
+        'orders': null,
+      },
+      queryParamsHandling: 'merge'
+    })
     this.calculateCartPrice();
   }
 

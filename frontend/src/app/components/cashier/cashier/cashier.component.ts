@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Item } from 'src/app/interfaces/item';
 import { BackendService } from 'src/app/services/backend/backend.service';
 
@@ -66,7 +66,7 @@ export class CashierComponent {
   taxTotal: number = 0;
   priceAfterTax: number = 0;
 
-  constructor(private backend: BackendService, private activatedRoute: ActivatedRoute) { }
+  constructor(private backend: BackendService, private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(x => {
@@ -95,6 +95,13 @@ export class CashierComponent {
     }
 
     this.cartItems = [];
+    this.router.navigate([], {
+      queryParams: {
+        'orders': null,
+      },
+      queryParamsHandling: 'merge'
+    })
+    this.calculateCartPrice();
   }
 
   calculateCartPrice() {
