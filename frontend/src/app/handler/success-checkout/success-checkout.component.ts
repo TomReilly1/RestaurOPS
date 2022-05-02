@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-success-checkout',
@@ -8,10 +8,18 @@ import { Router } from '@angular/router';
 })
 export class SuccessCheckoutComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private activatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
-    this.router.navigateByUrl("/")
+    this.activatedRoute.queryParams.subscribe(x => {
+        let type = x.type;
+
+        if (type == "customer") {
+            this.router.navigateByUrl("/customer");
+        } else if (type == "cashier") {
+            this.router.navigateByUrl("/cashier");
+        }
+    });
   }
 
 }
