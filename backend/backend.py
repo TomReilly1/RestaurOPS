@@ -5,6 +5,8 @@ from datetime import datetime
 import stripe
 from flask_socketio import SocketIO, send, emit
 import eventlet
+from base64 import urlsafe_b64encode, urlsafe_b64decode
+import json
 
 ######### GLOBAL COUNTER #########
 # global_counter = 0
@@ -104,9 +106,10 @@ class Test(db.Model):
 @app.route('/api/create-checkout-session', methods=['POST', 'GET'])
 def createCheckoutSession():
 	request_data = request.get_json()
+	print(request_data)
 
 	line_items_input = []
-	for i in request_data:
+	for i in request_data['items']:
 		line_items_input.append({'price': i['price_id'], 'quantity': i['quantity']})
 
 
@@ -116,9 +119,18 @@ def createCheckoutSession():
 		automatic_tax={
 			'enabled': True,
 		},
-		success_url= FRONT_DOMAIN + '/handler/success-checkout',
-		cancel_url= FRONT_DOMAIN + '/handler/failure-checkout',
+		#success_url= FRONT_DOMAIN + '/handler/success-checkout',
+		#cancel_url= FRONT_DOMAIN + '/handler/failure-checkout',
+		success_url= f'{FRONT_DOMAIN}/handler/success-checkout?type{request_data["type"]}',
+		cancel_url= f'{FRONT_DOMAIN}/handler/cancel-checkout?type={request_data["type"]}',
+
+		metadata= {'interface': request_data['type']}
 	)
+	# urlsafe_b64encode.base64UrlEncode(json.stringify(request_data['items']))
+	# type=customer&orders=toBase64(jsonEncode(orders))
+
+	print(checkout_session.url)
+	print()
 
 	return checkout_session.url
 
