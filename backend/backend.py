@@ -5,11 +5,23 @@ from datetime import datetime
 import stripe
 from flask_socketio import SocketIO, send, emit
 import eventlet
-from base64 import urlsafe_b64encode, urlsafe_b64decode
+# from base64 import urlsafe_b64encode, urlsafe_b64decode
 import json
+from base64 import urlsafe_b64encode
+import base64
+import urllib.parse
+query = 'Hellö Wörld@Python'
+urllib.parse.quote(query)
+ 
+ 
+# def base64UrlEncode(data):
+# 	return urlsafe_b64encode(data).rstrip(b'=')
 
-######### GLOBAL COUNTER #########
-# global_counter = 0
+def base64UrlEncode(data):
+    urlSafeEncodedBytes = base64.urlsafe_b64encode(data.encode("utf-8"))
+    urlSafeEncodedStr = str(urlSafeEncodedBytes, "utf-8")
+    return urlSafeEncodedStr
+
 
 ######### CONFIG #########
 app = Flask(__name__)
@@ -112,6 +124,13 @@ def createCheckoutSession():
 	for i in request_data['items']:
 		line_items_input.append({'price': i['price_id'], 'quantity': i['quantity']})
 
+	
+	# url_orders = urlsafe_b64encode(json.dumps(request_data["items"])).rstrip(b'=')
+	# print('BYTES')
+	# print(base64UrlEncode(json.dumps(request_data["items"])))
+
+	# json_url_orders = json.loads(request_data["items"])
+	# byte_safe_orders = urllib.parse.quote(json_url_orders)
 
 	checkout_session = stripe.checkout.Session.create(
 		line_items=line_items_input,
@@ -122,7 +141,7 @@ def createCheckoutSession():
 		#success_url= FRONT_DOMAIN + '/handler/success-checkout',
 		#cancel_url= FRONT_DOMAIN + '/handler/failure-checkout',
 		success_url= f'{FRONT_DOMAIN}/handler/success-checkout?type={request_data["type"]}',
-		cancel_url= f'{FRONT_DOMAIN}/handler/failure-checkout?type={request_data["type"]}',
+		cancel_url= f'{FRONT_DOMAIN}/handler/failure-checkout?type={request_data["type"]}&orders={base64UrlEncode(json.dumps(request_data["items"]))}',
 
 		metadata= {'interface': request_data['type']}
 	)
