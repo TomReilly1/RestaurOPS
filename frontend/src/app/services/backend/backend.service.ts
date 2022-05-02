@@ -13,8 +13,11 @@ export class BackendService {
 
   private backendURL: string = "http://localhost:4242/api/";
 
-  public createCheckoutSession(items: Item[]): Observable<any> {
-    return this.http.post(this.backendURL + 'create-checkout-session', items, {
+  public createCheckoutSession(items: any, type: string): Observable<any> {
+    return this.http.post(this.backendURL + 'create-checkout-session', {
+      items: items,
+      type: type
+    }, {
       responseType: "text"
     });  
   }

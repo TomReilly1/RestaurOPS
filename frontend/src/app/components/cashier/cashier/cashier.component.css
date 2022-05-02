@@ -31,7 +31,7 @@ app-item {
     background-color: #3c3c3c;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .cart>h1 {

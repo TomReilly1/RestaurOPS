@@ -112,7 +112,7 @@ export class CustomerComponent {
   }
 
   submitToBackend() {
-    this.backend.createCheckoutSession(this.cartItems).subscribe(
+    this.backend.createCheckoutSession(this.cartItems, "customer").subscribe(
       response => {
         window.location.href = response;
         this.clearCart();

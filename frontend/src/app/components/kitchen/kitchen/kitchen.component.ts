@@ -21,7 +21,6 @@ export class KitchenComponent implements OnInit {
     this.backend.sendCompletedStatus(order).subscribe(
       response => {
         console.log("Response: ", response)
-        location.reload()
       },
       error => console.error("Error: ", error)
     );

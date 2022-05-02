@@ -74,10 +74,6 @@ export class CashierComponent {
     else {
       this.cartItems.push(addedItem);
     }
-
-    
-    // this.http.post<Item>('http://192.168.0.68:5000/', {'name': item.name, 'price': item.price}).subscribe();
-    // this.http.post<Item>('http://127.0.0.1:5000/', {'name': item.name, 'price': item.price}).subscribe();
   }
 
   clearCart() {
@@ -107,7 +103,7 @@ export class CashierComponent {
   }
 
   submitToBackend() {
-    this.backend.createCheckoutSession(this.cartItems).subscribe(
+    this.backend.createCheckoutSession(this.cartItems, "cashier").subscribe(
       response => {
         window.location.href = response;
         this.clearCart();
