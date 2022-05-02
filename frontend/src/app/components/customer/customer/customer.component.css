@@ -31,7 +31,7 @@ app-item {
     background-color: #3c3c3c;
     display: flex;
     flex-direction: column;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 .cart>h1 {
@@ -64,4 +64,17 @@ cart-item {
 
 .buttons>* {
     margin-top: 10px;
+}
+
+.paymentOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.874);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    color: white;
 }

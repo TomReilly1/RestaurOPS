@@ -20,6 +20,8 @@ import { FormsModule } from '@angular/forms';
 import { SocketIoModule } from 'ngx-socket-io';
 
 import { OrderComponent } from './components/kitchen/order/order.component';
+import { FailedCheckoutComponent } from './handler/failed-checkout/failed-checkout.component';
+import { SuccessCheckoutComponent } from './handler/success-checkout/success-checkout.component';
 //const config: SocketIoConfig = { url: 'ws://localhost:4242', options: {} };
 
 @NgModule({
@@ -31,6 +33,8 @@ import { OrderComponent } from './components/kitchen/order/order.component';
     KitchenComponent,
     ItemComponent,
     OrderComponent,
+    FailedCheckoutComponent,
+    SuccessCheckoutComponent,
   ],
   imports: [
     BrowserModule,
