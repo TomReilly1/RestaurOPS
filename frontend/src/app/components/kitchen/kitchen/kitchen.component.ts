@@ -47,17 +47,18 @@ export class KitchenComponent implements OnInit {
 
   ngOnInit(): void {
     // WebSocket for intial connection
+    this.ordersInProgress = [];
+
     this.webSocketService.listen('connect').subscribe((data: any) => {
-      this.ordersInProgress = data;
-      console.log(this.ordersInProgress);
+      for (let i = 0; i < data.length; i++) {
+        this.ordersInProgress.push(data[i]);
+      }
     });
 
 
     // WebSocket for new orders
     this.webSocketService.listen('newOrder').subscribe((data: any) => {
-      this.ordersInProgress.push(data);
-      
-      console.log(this.ordersInProgress);
+        this.ordersInProgress.push(data);
     });
   }
 
