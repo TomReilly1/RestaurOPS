@@ -75,7 +75,8 @@ export class CashierComponent {
       //convert from base64url and then from json
       let ordersJson = atob(orders);
       let ordersJsonParsed = JSON.parse(ordersJson);
-      this.items = ordersJsonParsed;
+      this.cartItems = ordersJsonParsed;
+      this.calculateCartPrice();
     })
   }
 
