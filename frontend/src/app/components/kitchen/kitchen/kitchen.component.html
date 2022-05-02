@@ -1,15 +1,13 @@
-<div class="mainBody">
-    <h1 id="kitchen-heading">KITCHEN</h1>
+<div class="mainBody" (window:keydown)="onKey($event)">
     <div class="orders-container">
-        <div *ngFor="let order of ordersInProgress" class="order-c">
-            <div><span>{{ order.order_id }}</span></div>
+        <div *ngFor="let order of ordersInProgress; let i=index" class="order-c" [class.selected]="isSelected(i)">
+            <h1>Order #{{truncateOrderID(order.order_id) | uppercase}}</h1>
             <br>
-            <div *ngFor="let item of order.items_list; let i = index" class="items-list">
-                <span>{{ item.name }}:</span>
-                <span>{{ item.quantity }}</span>
-            </div>
-            <div>
-                <button mat-raised-button color="primary" (click)="markAsCompleted(order)">Mark as Completed</button>
+            <div *ngFor="let item of order.items_list;" class="items-list">
+                <span>QUANTITY {{item.quantity}} {{item.name | uppercase}}</span>
             </div>
         </div>
     </div>
+</div>
+
+<h1 id="time">{{now}}</h1>

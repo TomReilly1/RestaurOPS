@@ -11,11 +11,11 @@ import { BackendService } from "src/app/services/backend/backend.service";
   styleUrls: ['./kitchen.component.css']
 })
 export class KitchenComponent implements OnInit {
+  ordersInProgress: KitchenOrder[] = [
 
-  title = 'KITCHEN COMPONENT';
-  ordersInProgress: KitchenOrder[] = [];
-  temp: KitchenOrder[] = [];
+  ];
 
+  selectedIndexPOS = 0;
 
   markAsCompleted(order: KitchenOrder) {
     this.backend.sendCompletedStatus(order).subscribe(
@@ -31,29 +31,27 @@ export class KitchenComponent implements OnInit {
     this.ordersInProgress.splice(index, 1);
   }
 
+  public now: Date = new Date();
+
 
   constructor(
     private webSocketService: WebSocketService,
-    private backend: BackendService
-  ) { }
+    private backend: BackendService,
+  )
+  {
+    setInterval(() => {
+      this.now = new Date();
+    }, 1000);
+  }
 
 
   ngOnInit(): void {
     // WebSocket for intial connection
     this.webSocketService.listen('connect').subscribe((data: any) => {
-      this.temp = data;
-
-      if (this.temp === undefined) {
-        console.log("Undefined")
-      }
-      else {
-        for (let i = 0; i < this.temp.length; i++) {
-          this.ordersInProgress.push(data[i]);
-        }
-      }
-
+      this.ordersInProgress = data;
       console.log(this.ordersInProgress);
-    })
+    });
+
 
     // WebSocket for new orders
     this.webSocketService.listen('newOrder').subscribe((data: any) => {
@@ -61,5 +59,29 @@ export class KitchenComponent implements OnInit {
       
       console.log(this.ordersInProgress);
     });
+  }
+
+  truncateOrderID(orderID: string) {
+    return orderID.substring(0, 5);
+  }
+
+  onKey(event: any) {
+    console.log(event.keyCode);
+    //arrow keys to change selected item, support only left and right
+    if (event.keyCode === 37 && this.selectedIndexPOS > 0) {
+        this.selectedIndexPOS--;
+        console.log(this.selectedIndexPOS);
+    } else if (event.keyCode === 39 && this.selectedIndexPOS < this.ordersInProgress.length - 1) {
+        this.selectedIndexPOS++;
+    }
+
+    //if enter or spacebar, call markAsCompleted
+    if (event.keyCode === 13 || event.keyCode === 32) {
+        this.markAsCompleted(this.ordersInProgress[this.selectedIndexPOS]);
+    }
+  }
+
+  isSelected(index: number) {
+    return this.selectedIndexPOS === index;
   }
 }

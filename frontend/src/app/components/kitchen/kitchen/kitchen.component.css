@@ -2,6 +2,8 @@
     /* display: flex; */
     height: 100%;
     width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 #kitchen-heading {
@@ -32,9 +34,13 @@ kitchen-item {
 }
 
 .order-c {
-    width: 200px;
-    height: 200px;
-    overflow: scroll;
+    width: 300px;
+    min-height: 200px;
+    background-color: #263238;
+    border-radius: 20px;
+    padding: 15px;
+    color: white;
+    border: 5px solid #263238;
 }
 
 .items-list {
@@ -42,12 +48,19 @@ kitchen-item {
     justify-content: space-between;
 }
 
-.items-list span:first-child{
-    padding-left: 10px;
-    width: 70%;
+.orders-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.items-list span:last-child{
-    text-align: center;
-    width: 25%;
+.selected {
+    border: 5px solid #00bcd4 !important;
+}
+
+#time {
+    color: black;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
 }
