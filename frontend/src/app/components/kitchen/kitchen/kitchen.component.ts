@@ -63,7 +63,8 @@ export class KitchenComponent implements OnInit {
   }
 
   truncateOrderID(orderID: string) {
-    return orderID.substring(0, 5);
+    //show last 8 characters of orderID
+    return orderID.slice(-8);
   }
 
   onKey(event: any) {
