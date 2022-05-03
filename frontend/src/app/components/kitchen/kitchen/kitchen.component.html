@@ -1,4 +1,5 @@
 <div class="mainBody" (window:keydown)="onKey($event)">
+    <h1>Active Orders</h1>
     <div class="orders-container">
         <div *ngFor="let order of ordersInProgress; let i=index" class="order-c" [class.selected]="isSelected(i)">
             <h1>Order #{{truncateOrderID(order.order_id) | uppercase}}</h1>

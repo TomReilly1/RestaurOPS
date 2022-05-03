@@ -13,11 +13,11 @@
         <div class="buttons">
             <mat-card>
                 {{calculateCartPrice()}}
-                <span>before tax: {{priceBeforeTax}}</span>
+                <span>Subtotal: ${{priceBeforeTax}}</span>
                 <br>
-                <span>tax: {{taxTotal}} ({{taxPercent * 100}}%)</span>
+                <span>Tax: ${{taxTotal}} ({{taxPercent * 100}}%)</span>
                 <br>
-                <span>Total: {{priceAfterTax}}</span>
+                <span>Grand Total: ${{priceAfterTax}}</span>
             </mat-card>
             <button mat-raised-button color="primary" (click)="submitToBackend()">Submit</button>
             <button mat-raised-button color="accent" (click)="clearCart()">Clear</button>
