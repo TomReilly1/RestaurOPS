@@ -1,4 +1,3 @@
-
 <div class="mainBody">
     <div class="items">
         <h1>Select your product</h1>
@@ -9,7 +8,7 @@
     <div class="cart">
         <h1>Your cart</h1>
         <!-- <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name"></cart-item> -->
-        <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name" [quantity]="item.quantity"></cart-item>
+        <cart-item *ngFor="let item of cartItems" [price]="item.price" [name]="item.name" [quantity]="item.quantity" (removed)="removeItem(item.id)"></cart-item>
 
         <div class="buttons">
             <mat-card>

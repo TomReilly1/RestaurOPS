@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CustomerComponent } from 'src/app/components/customer/customer/customer.component';
 
 
@@ -15,8 +15,14 @@ export class CartComponent implements OnInit {
   @Input() quantity = 1;
   @Input() cartItems = [];
 
+  @Output() removed = new EventEmitter<any>();
+
   clearCart() {
     this.cartItems = [];
+  }
+
+  removeItem() {
+    this.removed.emit(this.id);
   }
 
   constructor() { }

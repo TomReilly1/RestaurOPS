@@ -131,4 +131,9 @@ export class CashierComponent {
       error => console.error("Error: ", error)
     );
   }
+
+  removeItem(itemID: string) {
+    this.cartItems = this.cartItems.filter(i => i.id !== itemID);
+    this.calculateCartPrice();
+  }
 }
